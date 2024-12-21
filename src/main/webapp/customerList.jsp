@@ -23,7 +23,7 @@
             // 顧客リストをリクエスト属性から取得
             List<Customer> customers = (List<Customer>) request.getAttribute("customerList");
             if (customers != null && !customers.isEmpty()) {
-                // 顧客リストが存在する場合、各顧客情報を表示
+                // 顧客リストが存在する場合、各顧客情報表示
                 for (Customer customer : customers) {
         %>
         <tr>

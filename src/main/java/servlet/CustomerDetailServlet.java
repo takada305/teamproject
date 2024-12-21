@@ -22,10 +22,10 @@ public class CustomerDetailServlet extends HttpServlet {
         String idParam = request.getParameter("id"); // リンクから渡されたIDを取得
         int customerId = Integer.parseInt(idParam); // Stringからintに変換
 
-        // DAOを使用して顧客情報を取得
+        // DAOを使用して顧客情報を取得　来週確認
         Customer customer = CustomerDAO.getCustomerById(customerId);
 
-        // 取得した顧客情報をリクエスト属性に設定
+        // 取得した顧客情報をリクエスト属性に設定　来週確認
         request.setAttribute("customer", customer);
 
         // 顧客詳細画面にフォワード

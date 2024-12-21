@@ -28,7 +28,7 @@
     <h1>顧客管理システム</h1>
     
     <%
-        // 権限コードを取得
+        // 権限コード取得
         String authority = (String) session.getAttribute("authority");
 
         if (authority == null) {

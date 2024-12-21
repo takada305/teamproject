@@ -7,7 +7,6 @@
 <body>
     <h1>顧客詳細</h1>
     <%
-  
         Customer customer = (Customer) request.getAttribute("customer");
         if (customer != null) {
     %>
@@ -21,14 +20,27 @@
         <tr><th>生年月日</th><td><%= customer.getBirthday() %></td></tr>
         <tr><th>電話番号</th><td><%= customer.getPhoneNumber() %></td></tr>
     </table>
+    <br>
+    <!-- 編集ボタン -->
+    <form action="CustomerEditServlet" method="get">
+        <input type="hidden" name="id" value="<%= customer.getId() %>">
+        <button type="submit">編集</button>
+    </form>
+    <br>
+    <!-- 削除ボタン -->
+    <form action="customerDeleteConfirm.jsp" method="get">
+        <input type="hidden" name="id" value="<%= customer.getId() %>">
+        <button type="submit">削除</button>
+    </form>
+    <br>
+    <a href="CustomerListServlet">顧客一覧に戻る</a>
     <%
         } else {
     %>
     <p>顧客情報が見つかりません。</p>
+    <a href="CustomerListServlet">顧客一覧に戻る</a>
     <%
         }
     %>
-    <br>
-    <a href="CustomerListServlet">顧客一覧に戻る</a>
 </body>
 </html>
