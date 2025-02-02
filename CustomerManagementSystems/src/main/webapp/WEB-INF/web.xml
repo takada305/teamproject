@@ -1,0 +1,46 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="3.0">
+    <display-name>CustomerManagementSystems</display-name>
+
+    <welcome-file-list>
+        <welcome-file>login.jsp</welcome-file>
+    </welcome-file-list> 
+    
+    <servlet>
+        <servlet-name>CustomerRegisterServlet</servlet-name>
+        <servlet-class>servlet.CustomerRegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerRegisterServlet</servlet-name>
+        <url-pattern>/CustomerRegisterServlet</url-pattern>
+    </servlet-mapping>
+    
+	<servlet>
+    	<servlet-name>CustomerListServlet</servlet-name>
+    	<servlet-class>servlet.CustomerListServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+   		 <servlet-name>CustomerListServlet</servlet-name>
+    	<url-pattern>/CustomerListServlet</url-pattern>
+	</servlet-mapping>
+
+    <!-- CustomerEditServlet の定義 -->
+ 　 <servlet>
+        <servlet-name>CustomerEditServlet</servlet-name>
+        <servlet-class>servlet.CustomerEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CustomerEditServlet</servlet-name>
+        <url-pattern>/CustomerEditServlet</url-pattern>
+    </servlet-mapping> 
+    
+        <!-- LoginServlet の定義 -->
+   <!--  <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>servlet.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/LoginServlet</url-pattern>
+    </servlet-mapping>	 -->
+</web-app>
+
