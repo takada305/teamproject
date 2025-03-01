@@ -14,20 +14,25 @@ import dao.AuthorityDAO;
 public class AuthorityEditServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // フォームデー取得
+    
         String userId = request.getParameter("userId");
         String newAuthority = request.getParameter("authority");
 
-        // 権限更新
+        // 権限を更新
         boolean isUpdated = AuthorityDAO.updateAuthority(userId, newAuthority);
 
         if (isUpdated) {
-            // 成功時
-            response.sendRedirect("success.jsp"); 
+            // ユーザー情報保存
+            request.getSession().setAttribute("loggedInUserId", userId);
+            request.getSession().setAttribute("authority", newAuthority);
+
+            // `menu.jsp` にリダイレクト
+            response.sendRedirect("menu.jsp");
         } else {
-            // 失敗時
+            // 更新失敗
             request.setAttribute("errorMessage", "権限の更新に失敗しました。");
             request.getRequestDispatcher("authorityEdit.jsp").forward(request, response);
         }

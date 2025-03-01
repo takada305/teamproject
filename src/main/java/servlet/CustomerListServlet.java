@@ -12,20 +12,42 @@ import javax.servlet.http.HttpServletResponse;
 import dao.Customer;
 import dao.CustomerDAO;
 
-
-
 @WebServlet("/CustomerListServlet")
 public class CustomerListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // DAOから顧客情報を取得
-        List<Customer> customerList = CustomerDAO.getAllCustomers();
+        processRequest(request, response);
+    }
 
-        // 顧客情報をリクエスト属性に設定
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String searchQuery = request.getParameter("search"); // 検索クエリを取得
+        List<Customer> customerList;
+
+        if (searchQuery != null && !searchQuery.isEmpty()) {
+            // 検索ワードがあれば、名前で検索する
+            customerList = CustomerDAO.searchCustomersByName(searchQuery);
+        } else {
+            // 検索ワードが空なら、全顧客を取得
+            customerList = CustomerDAO.getAllCustomers();
+        }
+
+        // 結果をJSPに渡す
         request.setAttribute("customerList", customerList);
 
-        request.getRequestDispatcher("customerList.jsp").forward(request, response);
+        // 顧客がいない場合、検索結果がないことを表示
+        if (customerList.isEmpty()) {
+            request.setAttribute("noResultsMessage", "検索結果はありません");
+        }
+
+        // JSPにフォワード
+        request.getRequestDispatcher("/customerList.jsp").forward(request, response);
     }
 }

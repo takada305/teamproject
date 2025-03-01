@@ -1,56 +1,88 @@
-<%@ page import="java.util.List" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ include file="header.jsp" %>
 <%@ page import="dao.Customer" %>
+<%@ page import="java.util.List" %>
+
 <!DOCTYPE html>
 <html>
 <head>
     <title>顧客一覧</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #E0E0E0;
+            border: 1px solid black;
+            text-decoration: none;
+            color: black;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: separate;
+            border: 1px solid black;
+        }
+        th, td {
+            border: 1px double black;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>顧客一覧</h1>
-    <table border="1">
+    <form method="get" action="CustomerListServlet">
+        <input type="text" name="search" placeholder="検索">
+        <button type="submit">検索</button>
+    </form>
+
+    <% 
+        List<Customer> customers = (List<Customer>) request.getAttribute("customerList");
+        String noResultsMessage = (String) request.getAttribute("noResultsMessage");
+        if (noResultsMessage != null) {
+    %>
+        <p><%= noResultsMessage %></p>
+    <% 
+        }
+        if (customers != null && !customers.isEmpty()) {
+            // セッションから権限情報を取得
+            String authority = (String) session.getAttribute("authority");
+    %>
+    <table>
         <tr>
-            <th>ID</th>
+            <th>顧客ID</th>
             <th>氏名</th>
             <th>かな</th>
-            <th>郵便番号</th>
-            <th>住所</th>
             <th>性別</th>
-            <th>生年月日</th>
-            <th>電話番号</th>
-            <th>操作</th>
+            <th>詳細</th>
         </tr>
         <%
-            // 顧客リストをリクエスト属性から取得
-            List<Customer> customers = (List<Customer>) request.getAttribute("customerList");
-            if (customers != null && !customers.isEmpty()) {
-                // 顧客リストが存在する場合、各顧客情報表示
-                for (Customer customer : customers) {
+            for (Customer customer : customers) {
         %>
         <tr>
             <td><%= customer.getId() %></td>
             <td><%= customer.getName() %></td>
             <td><%= customer.getKana() %></td>
-            <td><%= customer.getPostCode() %></td>
-            <td><%= customer.getAddress() %></td>
             <td><%= customer.getGender() %></td>
-            <td><%= customer.getBirthday() %></td>
-            <td><%= customer.getPhoneNumber() %></td>
             <td>
-                <a href="CustomerDetailServlet?id=<%= customer.getId() %>">詳細を見る</a> <!-- 詳細リンク -->
+                <form method="get" action="CustomerDetailServlet">
+                    <input type="hidden" name="id" value="<%= customer.getId() %>">
+                    <button type="submit">詳細</button>
+                </form>
             </td>
         </tr>
-        <%
-                }
-            } else {
-        %>
-        <tr>
-            <td colspan="9">データがありません。</td> <!-- データがない場合 -->
-        </tr>
-        <%
+        <% 
             }
         %>
     </table>
-    <br>
-    <a href="menu.jsp">メニューに戻る</a> <!-- メニュー画面へ -->
+    <% 
+        }
+    %>
+
+    <a href="menu.jsp" class="button">メニュー画面へ</a>
 </body>
 </html>

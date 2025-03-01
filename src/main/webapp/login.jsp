@@ -1,5 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>ログイン画面</title>
@@ -10,31 +11,48 @@
         }
         .error-message {
             color: red;
-            margin-top: 10px;
+            font-size: 16px;
+            margin: 10px 0 20px 0;
         }
         .logo {
             margin-bottom: 20px;
         }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        input {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            display: block;
+            margin: 0 auto; 
+            padding: 10px 20px;
+            font-size: 16px;
+            color: black;
+            background-color: #E0E0E0; 
+            border: 1px solid #ccc; 
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: gray;
+        }
     </style>
 </head>
 <body>
-    <!-- ロゴ -->
     <div class="logo">
-        <img src="/Users/takadaakira/Desktop/ログイン画面 2.jpg" alt="SE Assist Logo" width="150">
+        <img src="images/図1.png" alt="SE Assist Logo" width="150">
     </div>
 
     <h1>顧客管理システム</h1>
-    <!-- ログインフォーム -->
-    <form action="LoginServlet" method="post">
-        <label for="userId">ユーザ名:</label>
-        <input type="text" id="userId" name="userId" required><br><br>
-        <label for="password">パスワード:</label>
-        <input type="password" id="password" name="password" required><br><br>
-        <button type="submit">ログイン</button>
-    </form>
 
-    <!-- エラーメッセージの表示 -->
-    <%
+   <%
         String errorMessage = (String) request.getAttribute("errorMessage");
         if (errorMessage != null) {
     %>
@@ -42,5 +60,15 @@
     <%
         }
     %>
+
+    <form action="LoginServlet" method="post">
+        <label for="userId">ユーザ名</label>
+        <input type="text" id="userId" name="userId" required>
+
+        <label for="password">パスワード</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">ログイン</button>
+    </form>
 </body>
 </html>

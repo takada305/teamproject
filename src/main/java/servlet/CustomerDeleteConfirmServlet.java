@@ -8,36 +8,33 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import dao.Customer;
 import dao.CustomerDAO;
 
-@WebServlet("/CustomerDeleteServlet") 
-public class CustomerDeleteServlet extends HttpServlet {
+@WebServlet("/CustomerDeleteConfirmServlet") 
+public class CustomerDeleteConfirmServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // 顧客IDを取得
         String idParam = request.getParameter("id");
         try {
             int id = Integer.parseInt(idParam);
 
-            // 顧客情報を削除
-            boolean isDeleted = CustomerDAO.deleteCustomerById(id);
+            // 顧客情報を取得
+            Customer customer = CustomerDAO.getCustomerById(id);
 
-            if (isDeleted) {
-                // 成功
-                response.sendRedirect("CustomerListServlet");
-            } else {
-                // 失敗
-                request.setAttribute("errorMessage", "削除に失敗しました。");
+            if (customer != null) {
+                request.setAttribute("customer", customer);
                 request.getRequestDispatcher("customerDeleteConfirm.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("CustomerListServlet"); // 該当なしの場合一覧へ
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp"); 
+            response.sendRedirect("error.jsp");
         }
     }
 }
-
-
-

@@ -16,7 +16,7 @@ public class LoginDAO {
             ps.setString(2, password);
 
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // ユーザーが存在しているか
+                return rs.next(); 
             }
         } catch (SQLException e) {
             e.printStackTrace();

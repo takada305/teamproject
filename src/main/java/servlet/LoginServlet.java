@@ -14,9 +14,10 @@ import dao.LoginDAO;
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // フォームから送信されたデータを取得する
+        // フォームから送信されたデータを取得
         String userId = request.getParameter("userId");
         String password = request.getParameter("password");
 
@@ -29,10 +30,22 @@ public class LoginServlet extends HttpServlet {
             String authority = LoginDAO.getAuthority(userId);
             request.getSession().setAttribute("authority", authority);
 
-            response.sendRedirect("menu.jsp");
+            // エラーメッセージをクリア
+            request.getSession().removeAttribute("errorMessage");
+
+            response.sendRedirect(request.getContextPath() + "/menu.jsp");
         } else {
+            // ログイン失敗時
             request.setAttribute("errorMessage", "ログイン失敗しました。もう一度入力してください。");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // 初期表示時にエラーメッセージをクリア
+        request.setAttribute("errorMessage", null);
+        request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 }

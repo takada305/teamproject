@@ -1,7 +1,9 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -10,61 +12,82 @@ import javax.servlet.http.HttpServletResponse;
 
 import dao.Customer;
 import dao.CustomerDAO;
+import dao.DistrictDAO;
 
 @WebServlet("/CustomerEditServlet")
 public class CustomerEditServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // 編集画面への遷移処理
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // リクエストパラメータから顧客IDを取得
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         String idParam = request.getParameter("id");
+
+        if (idParam == null || idParam.isEmpty()) {
+            response.sendRedirect("CustomerListServlet");
+            return;
+        }
+
         try {
-            int id = Integer.parseInt(idParam);
+            int customerId = Integer.parseInt(idParam);
+            Customer customer = CustomerDAO.getCustomerById(customerId);
 
-            // データベースから顧客情報を取得
-            Customer customer = CustomerDAO.getCustomerById(id);
-
-            if (customer != null) {
-                // 顧客情報をリクエストスコープに設定
-                request.setAttribute("customer", customer);
-
-                // 編集画面にフォワード
-                request.getRequestDispatcher("customerEdit.jsp").forward(request, response);
-            } else {
-                // 顧客が見つからない場合
-                response.sendRedirect("error.jsp"); // エラー用ページに
+            if (customer == null) {
+                response.sendRedirect("CustomerListServlet");
+                return;
             }
+
+            // 地区リストを取得
+            List<String> districtList = DistrictDAO.getAllDistricts();
+
+            if (districtList == null || districtList.isEmpty()) {
+                System.out.println("⚠ CustomerEditServlet: districtList が NULL または空です！");
+            }
+
+            // JSP にデータを渡す
+            request.setAttribute("customer", customer);
+            request.setAttribute("districtList", districtList);
+
+            // フォワード
+            RequestDispatcher dispatcher = request.getRequestDispatcher("customerEdit.jsp");
+            dispatcher.forward(request, response);
+
         } catch (NumberFormatException e) {
-            e.printStackTrace();
-            response.sendRedirect("error.jsp"); // 無効なIDの場合
+            response.sendRedirect("CustomerListServlet");
         }
     }
 
-    // 編集データの更新処理
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // フォームデータを取得
-        int id = Integer.parseInt(request.getParameter("id"));
-        String name = request.getParameter("name");
-        String kana = request.getParameter("kana");
-        String postCode = request.getParameter("postCode");
-        String address = request.getParameter("address");
-        String gender = request.getParameter("gender");
-        String birthday = request.getParameter("birthday");
-        String phoneNumber = request.getParameter("phoneNumber");
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
-        // データベースを更新
-        boolean isUpdated = CustomerDAO.updateCustomer(id, name, kana, postCode, address, gender, birthday, phoneNumber);
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+            String name = request.getParameter("name");
+            String kana = request.getParameter("kana");
+            String postCode = request.getParameter("postCode");
+            String district = request.getParameter("district");
+            String gender = request.getParameter("gender");
+            String birthday = request.getParameter("birthday");
+            String phoneNumber = request.getParameter("phoneNumber");
 
-        if (isUpdated) {
-            // 更新成功
-            response.sendRedirect("CustomerDetailServlet?id=" + id);
-        } else {
-            // 更新失敗
-            request.setAttribute("errorMessage", "更新に失敗しました。もう一度お試しください。");
-            request.getRequestDispatcher("customerEdit.jsp").forward(request, response);
+            // 顧客情報の更新
+            boolean success = CustomerDAO.updateCustomer(id, name, kana, postCode, district, gender, birthday, phoneNumber);
+
+            if (success) {
+                // 更新成功時、詳細ページへリダイレクト
+                response.sendRedirect("CustomerDetailServlet?id=" + id);
+            } else {
+                // 失敗時
+                request.setAttribute("errorMessage", "顧客情報の更新に失敗しました。");
+                doGet(request, response); // 編集画面に戻す
+            }
+
+        } catch (NumberFormatException e) {
+            response.sendRedirect("CustomerListServlet");
         }
     }
 }
