@@ -49,7 +49,7 @@
     <% 
         }
         if (customers != null && !customers.isEmpty()) {
-            // セッションから権限情報を取得
+            // セッションから権限情報を取得する
             String authority = (String) session.getAttribute("authority");
     %>
     <table>

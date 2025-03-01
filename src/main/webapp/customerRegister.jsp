@@ -16,7 +16,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>顧客登録フォーム</title>
+    <title>顧客登録フォーム</title> 
     <style>
         body {
             text-align: center;
